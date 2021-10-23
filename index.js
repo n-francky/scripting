@@ -36,9 +36,7 @@ newsPapers.forEach(news =>{
                 const url = $(this).attr('href');
                 articles.push({title, url, source: news.url});
             })
-            // res.json(articles);
-        })
-        .catch(err=>console.log(err))
+        }).catch(err=>console.log(err))
 })
 
 app.get('/', (req, res) => {
@@ -46,27 +44,11 @@ app.get('/', (req, res) => {
 })
 
 app.get('/news',  async (req, res) => {
-
-    res.json(articles)
-//     axios.get('https://docs.amplify.aws/cli/graphql-transformer/model/#model')
-//         .then(response =>{
-//             const html = response.data;
-//             console.log(html);
-//             const $ = cheerio.load(html);
-//             $('a:contains("Usage")',html).each(function(){
-//                 const title = $(this).text();
-//                 const url = $(this).attr('href');
-//                 articles.push({title, url});
-//             })
-//             res.json(articles);
-            
-//         })
-//         .catch(err =>console.log(`Error found ${err}`));
-
+    res.json(articles);
 });
 
 
-app.get('/test', (req, res) =>{
+app.get('/amplify', (req, res) =>{
     // axios.get('https://amplify.com/news')
     axios.get('https://aws.amazon.com/new/')
         .then(response =>{
