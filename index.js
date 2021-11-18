@@ -1,68 +1,45 @@
-const express = require('express');
-const axios = require('axios');
-const cheerio = require('cheerio');
-const PORT = process.env.PORT || 3000;
+const axios = require("axios");
+const cheerio = require("cheerio");
 
-const app = express();
+const todayPeriod = new Date();
 
+const runApplication = async () => {
+  const dataProcessors = await getDescriptions(todayPeriod);
+  console.log("dataProcessors: ", dataProcessors);
+};
 
-const articles = [];
-const amplify = [];
-const newsPapers = [
-    {
-        name: "The Guardian",
-        url:"https://www.theguardian.com/environment/climate-crisis"
-    },
+/**
+ * 
+ * @param {date} todayPeriod - The period of the article was published 
+ * @returns 
+ */
+const getDescriptions = async (todayPeriod) => {
+  const _ = [];
+  try {
+    const returnData = await axios.get(
+      `https://aws.amazon.com/about-aws/whats-new/${todayPeriod.getFullYear()}/`
+    );
+    const $ = cheerio.load(returnData.data);
 
-    {
-        name: "The Times",
-        url:"https://www.thetimes.co.uk/environment/climate-change"
-    },
+    const listOfPosts = $('[class="directory-list whats-new-detail"] li');
 
-    {
-        name: "The Telegraph",
-        url:"https://www.telegraph.co.uk/climate-change"
-    }
-];
+    listOfPosts.each((idx, element) => {
+      const wantedDate = new Date( $(element).find(".date").text().trim().split(":")[1]);
+      
+      if(wantedDate.getMonth()!= todayPeriod.getMonth()) return;
 
+      _.push({
+        title: $(element).find("a").text().split("Read More")[0],
+        url: $(element).find("a").attr("href"),
+        wantedDate,
+      });
+    });
 
-newsPapers.forEach(news =>{
-    axios.get(news.url)
-        .then(response => {
-            const html = response.data;
-            const $ = cheerio.load(html);
-            $('a:contains("climate")',html).each(function(){
-                const title = $(this).text();;
-                const url = $(this).attr('href');
-                articles.push({title, url, source: news.url});
-            })
-        }).catch(err=>console.log(err))
-})
+    return _;
+  
+  } catch (error) {
+    console.log(error);
+  }
+};
 
-app.get('/', (req, res) => {
-    res.json('Hello world')
-})
-
-app.get('/news',  async (req, res) => {
-    res.json(articles);
-});
-
-
-app.get('/amplify', (req, res) =>{
-    // axios.get('https://amplify.com/news')
-    axios.get('https://aws.amazon.com/new/')
-        .then(response =>{
-            // res.json(response.data);
-            const html = response.data
-            const $ = cheerio.load(html);
-            $('a',html).each(function(){
-                const title = $(this).text();
-                const url = $(this).attr('href');
-                amplify.push({title, url});
-            })
-            res.json(amplify)
-        })
-        .catch(err =>console.log(err))
-})
-
-app.listen(PORT, () => {console.log(`Server runing on port ${PORT}`)});
+runApplication();
