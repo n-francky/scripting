@@ -4,9 +4,9 @@ const cheerio = require("cheerio");
 const todayPeriod = new Date();
 
 /**
- * 
- * @param {date} todayPeriod - The period of the article was published 
- * @returns 
+ *
+ * @param {date} todayPeriod - The period of the article was published
+ * @returns
  */
 const getDescriptions = async (todayPeriod) => {
   const Posts = [];
@@ -19,11 +19,13 @@ const getDescriptions = async (todayPeriod) => {
     const listOfPosts = $('[class="directory-list whats-new-detail"] li');
 
     listOfPosts.each((idx, element) => {
-      const wantedDate = new Date( $(element).find(".date").text().trim().split(":")[1]);
-      
-      if(wantedDate.getMonth()!= todayPeriod.getMonth()) return;
+      const wantedDate = new Date(
+        $(element).find(".date").text().trim().split(":")[1]
+      );
+
+      if (wantedDate.getMonth() != todayPeriod.getMonth()) return;
       const dateFormated = `${wantedDate.getMonth()}/${wantedDate.getDate()}/${wantedDate.getFullYear()}`;
-      
+
       Posts.push({
         title: $(element).find("a").text().split("Read More")[0],
         url: $(element).find("a").attr("href"),
@@ -32,12 +34,10 @@ const getDescriptions = async (todayPeriod) => {
     });
 
     return Posts;
-  
   } catch (error) {
     console.log(error);
   }
 };
-
 
 const runApplication = async () => {
   const newArticles = await getDescriptions(todayPeriod);
@@ -45,4 +45,3 @@ const runApplication = async () => {
 };
 
 runApplication();
-
