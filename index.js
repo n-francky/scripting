@@ -1,6 +1,8 @@
 const axios = require("axios");
 const cheerio = require("cheerio");
+const moment = require("moment");
 
+moment.locale("en-US");
 const todayPeriod = new Date();
 
 /**
@@ -23,13 +25,12 @@ const getDescriptions = async (todayPeriod) => {
         $(element).find(".date").text().trim().split(":")[1]
       );
 
-      if (wantedDate.getMonth() != todayPeriod.getMonth()) return;
-      const dateFormated = `${wantedDate.getMonth()}/${wantedDate.getDate()}/${wantedDate.getFullYear()}`;
+      if (wantedDate.getMonth() !== todayPeriod.getMonth()) return;
 
       Posts.push({
         title: $(element).find("a").text().split("Read More")[0],
         url: $(element).find("a").attr("href"),
-        PostedOn: dateFormated,
+        PostedOn: moment(wantedDate).fromNow(),
       });
     });
 
