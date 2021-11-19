@@ -3,11 +3,6 @@ const cheerio = require("cheerio");
 
 const todayPeriod = new Date();
 
-const runApplication = async () => {
-  const newArticles = await getDescriptions(todayPeriod);
-  console.log("dataProcessors: ", newArticles);
-};
-
 /**
  * 
  * @param {date} todayPeriod - The period of the article was published 
@@ -41,5 +36,14 @@ const getDescriptions = async (todayPeriod) => {
     console.log(error);
   }
 };
+
+
+const runApplication = async () => {
+  const newArticles = await getDescriptions(todayPeriod);
+  console.log("dataProcessors: ", newArticles);
+};
+
+
+
 
 runApplication();
