@@ -29,7 +29,7 @@ const getDescriptions = async (todayPeriod) => {
 
       Posts.push({
         title: $(element).find("a").text().split("Read More")[0],
-        url: $(element).find("a").attr("href"),
+        url: 'https:'+$(element).find("a").attr("href"),
         PostedOn: moment(wantedDate).fromNow(),
       });
     });
