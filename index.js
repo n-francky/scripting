@@ -11,10 +11,10 @@ const todayPeriod = new Date();
 const getDescriptions = async (todayPeriod) => {
   const Posts = [];
   try {
-    const returnHtml = await axios.get(
+    const pageDa = await axios.get(
       `https://aws.amazon.com/about-aws/whats-new/${todayPeriod.getFullYear()}/`
     );
-    const $ = cheerio.load(returnHtml.data);
+    const $ = cheerio.load(pageDa.data);
 
     const listOfPosts = $('[class="directory-list whats-new-detail"] li');
 
