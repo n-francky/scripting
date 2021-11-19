@@ -22,11 +22,12 @@ const getDescriptions = async (todayPeriod) => {
       const wantedDate = new Date( $(element).find(".date").text().trim().split(":")[1]);
       
       if(wantedDate.getMonth()!= todayPeriod.getMonth()) return;
+      const dateFormated = `${wantedDate.getMonth()}/${wantedDate.getDate()}/${wantedDate.getFullYear()}`;
       
       Posts.push({
         title: $(element).find("a").text().split("Read More")[0],
         url: $(element).find("a").attr("href"),
-        wantedDate,
+        PostedOn: dateFormated,
       });
     });
 
@@ -43,7 +44,5 @@ const runApplication = async () => {
   console.log("dataProcessors: ", newArticles);
 };
 
-
-
-
 runApplication();
+
