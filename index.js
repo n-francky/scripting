@@ -4,8 +4,8 @@ const cheerio = require("cheerio");
 const todayPeriod = new Date();
 
 const runApplication = async () => {
-  const articles = await getDescriptions(todayPeriod);
-  console.log("dataProcessors: ", articles);
+  const newArticles = await getDescriptions(todayPeriod);
+  console.log("dataProcessors: ", newArticles);
 };
 
 /**
@@ -14,12 +14,12 @@ const runApplication = async () => {
  * @returns 
  */
 const getDescriptions = async (todayPeriod) => {
-  const post = [];
+  const Posts = [];
   try {
-    const returnData = await axios.get(
+    const returnHtml = await axios.get(
       `https://aws.amazon.com/about-aws/whats-new/${todayPeriod.getFullYear()}/`
     );
-    const $ = cheerio.load(returnData.data);
+    const $ = cheerio.load(returnHtml.data);
 
     const listOfPosts = $('[class="directory-list whats-new-detail"] li');
 
@@ -27,15 +27,15 @@ const getDescriptions = async (todayPeriod) => {
       const wantedDate = new Date( $(element).find(".date").text().trim().split(":")[1]);
       
       if(wantedDate.getMonth()!= todayPeriod.getMonth()) return;
-
-      post.push({
+      
+      Posts.push({
         title: $(element).find("a").text().split("Read More")[0],
         url: $(element).find("a").attr("href"),
         wantedDate,
       });
     });
 
-    return post;
+    return Posts;
   
   } catch (error) {
     console.log(error);
