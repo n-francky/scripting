@@ -1,8 +1,7 @@
-const express = require('express');
+const express = require("express");
 const axios = require("axios");
 const cheerio = require("cheerio");
 const moment = require("moment");
-
 
 const PORT = process.env.PORT || 3000;
 
@@ -27,7 +26,7 @@ const keyWords = [
 /**
  *
  * @param {date} todayPeriod - The period of the article was published
- * @returns 
+ * @returns
  */
 const getArticles = async (todayPeriod) => {
   const Posts = [];
@@ -59,9 +58,9 @@ const getArticles = async (todayPeriod) => {
 };
 
 /**
- * 
- * @param {Object} posts 
- * @returns 
+ *
+ * @param {Object} posts
+ * @returns
  */
 const relevantArticles = (posts) => {
   const relavantPosts = [];
@@ -74,10 +73,12 @@ const relevantArticles = (posts) => {
   return relavantPosts;
 };
 
-app.get('/news',async (req, res) => {
+app.get("/news", async (req, res) => {
   const newArticles = await getArticles(todayPeriod);
   const relevant = relevantArticles(newArticles);
   res.json(relevant);
-})
+});
 
-app.listen(PORT, () => {console.log(`Server runing on port ${PORT}`)});
+app.listen(PORT, () => {
+  console.log(`Server runing on port ${PORT}`);
+});
