@@ -6,18 +6,30 @@ moment.locale("en-US");
 const todayPeriod = new Date();
 
 /**
+ * key words to use to search for.
+ */
+const keyWords = [
+  "lambda",
+  "s3",
+  "ec2",
+  "ses",
+  "open search",
+  "dynamoDb",
+  "Amazon lex",
+];
+
+/**
  *
  * @param {date} todayPeriod - The period of the article was published
- * @returns
+ * @returns 
  */
-const getDescriptions = async (todayPeriod) => {
+const getArticles = async (todayPeriod) => {
   const Posts = [];
   try {
     const pageDa = await axios.get(
       `https://aws.amazon.com/about-aws/whats-new/${todayPeriod.getFullYear()}/`
     );
     const $ = cheerio.load(pageDa.data);
-
     const listOfPosts = $('[class="directory-list whats-new-detail"] li');
 
     listOfPosts.each((idx, element) => {
@@ -29,7 +41,7 @@ const getDescriptions = async (todayPeriod) => {
 
       Posts.push({
         title: $(element).find("a").text().split("Read More")[0],
-        url: 'https:'+$(element).find("a").attr("href"),
+        url: "https:" + $(element).find("a").attr("href"),
         PostedOn: moment(wantedDate).fromNow(),
       });
     });
@@ -40,9 +52,26 @@ const getDescriptions = async (todayPeriod) => {
   }
 };
 
+/**
+ * 
+ * @param {Object} posts 
+ * @returns 
+ */
+const relevantArticles = (posts) => {
+  const relavantPosts = [];
+  posts.forEach((post) => {
+    keyWords.forEach((key) => {
+      if (post.title.toLowerCase().includes(key.toLowerCase()))
+        relavantPosts.push(post);
+    });
+  });
+  return relavantPosts;
+};
+
 const runApplication = async () => {
-  const newArticles = await getDescriptions(todayPeriod);
-  console.log("dataProcessors: ", newArticles);
+  const newArticles = await getArticles(todayPeriod);
+  const relevant = relevantArticles(newArticles);
+  console.log(relevant);
 };
 
 runApplication();
