@@ -1,6 +1,12 @@
+const express = require('express');
 const axios = require("axios");
 const cheerio = require("cheerio");
 const moment = require("moment");
+
+
+const PORT = process.env.PORT || 3000;
+
+const app = express();
 
 moment.locale("en-US");
 const todayPeriod = new Date();
@@ -68,10 +74,10 @@ const relevantArticles = (posts) => {
   return relavantPosts;
 };
 
-const runApplication = async () => {
+app.get('/news',async (req, res) => {
   const newArticles = await getArticles(todayPeriod);
   const relevant = relevantArticles(newArticles);
-  console.log(relevant);
-};
+  res.json(relevant);
+})
 
-runApplication();
+app.listen(PORT, () => {console.log(`Server runing on port ${PORT}`)});
