@@ -38,16 +38,16 @@ const getArticles = async (todayPeriod) => {
     const listOfPosts = $('[class="directory-list whats-new-detail"] li');
 
     listOfPosts.each((idx, element) => {
-      const wantedDate = new Date(
+      const postedDate = new Date(
         $(element).find(".date").text().trim().split(":")[1]
       );
 
-      if (wantedDate.getMonth() !== todayPeriod.getMonth()) return;
+      if (postedDate.getMonth() !== todayPeriod.getMonth()) return;
 
       Posts.push({
         title: $(element).find("a").text().split("Read More")[0],
         url: "https:" + $(element).find("a").attr("href"),
-        PostedOn: moment(wantedDate).fromNow(),
+        PostedOn: moment(postedDate).fromNow(),
       });
     });
 
@@ -58,13 +58,13 @@ const getArticles = async (todayPeriod) => {
 };
 
 /**
- *
+ * Returns only the posts that have one of the keyWords
  * @param {Object} posts
  * @returns
  */
-const relevantArticles = (posts) => {
+const filterRelevantArticles = (posts) => {
   const relavantPosts = [];
-  posts.forEach((post) => {
+  posts.forEach(post => {
     keyWords.forEach((key) => {
       if (post.title.toLowerCase().includes(key.toLowerCase()))
         relavantPosts.push(post);
@@ -74,8 +74,8 @@ const relevantArticles = (posts) => {
 };
 
 app.get("/news", async (req, res) => {
-  const newArticles = await getArticles(todayPeriod);
-  const relevant = relevantArticles(newArticles);
+  const incomingArticles = await getArticles(todayPeriod);
+  const relevant = filterRelevantArticles(incomingArticles);
   res.json(relevant);
 });
 
