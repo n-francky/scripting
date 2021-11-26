@@ -42,6 +42,7 @@ const getArticles = async (todayPeriod) => {
         $(element).find(".date").text().trim().split(":")[1]
       );
 
+      // Only get for this month!
       if (postedDate.getMonth() !== todayPeriod.getMonth()) return;
 
       Posts.push({
@@ -58,13 +59,13 @@ const getArticles = async (todayPeriod) => {
 };
 
 /**
- * Returns only the posts that have one of the keyWords
+ * Returns only the posts that have one or many of the keyWords
  * @param {Object} posts
  * @returns
  */
 const filterRelevantArticles = (posts) => {
   const relavantPosts = [];
-  posts.forEach(post => {
+  posts.forEach((post) => {
     keyWords.forEach((key) => {
       if (post.title.toLowerCase().includes(key.toLowerCase()))
         relavantPosts.push(post);
