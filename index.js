@@ -21,6 +21,7 @@ const keyWords = [
   "open search",
   "dynamoDb",
   "Amazon lex",
+  "step function",
 ];
 
 /**
@@ -71,14 +72,14 @@ const filterRelevantArticles = (posts) => {
         relavantPosts.push(post);
     });
   });
+
+  if(relavantPosts.length === 0) relavantPosts.push("No relevant Post found!!");
+
   return relavantPosts;
 };
 
 app.get("/news", async (req, res) => {
   const incomingArticles = await getArticles(todayPeriod);
-
-  if(incomingArticles.length === 0) return;
-
   const relevant = filterRelevantArticles(incomingArticles);
   res.json(relevant);
 });
