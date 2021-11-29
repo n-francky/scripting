@@ -3,7 +3,7 @@ const axios = require("axios");
 const cheerio = require("cheerio");
 const moment = require("moment");
 
-const PORT = process.env.PORT || 3000;
+const PORT = 3000;
 
 const app = express();
 
@@ -31,10 +31,10 @@ const keyWords = [
 const getArticles = async (todayPeriod) => {
   const Posts = [];
   try {
-    const pageDa = await axios.get(
+    const pageHTML = await axios.get(
       `https://aws.amazon.com/about-aws/whats-new/${todayPeriod.getFullYear()}/`
     );
-    const $ = cheerio.load(pageDa.data);
+    const $ = cheerio.load(pageHTML.data);
     const listOfPosts = $('[class="directory-list whats-new-detail"] li');
 
     listOfPosts.each((idx, element) => {
@@ -76,6 +76,9 @@ const filterRelevantArticles = (posts) => {
 
 app.get("/news", async (req, res) => {
   const incomingArticles = await getArticles(todayPeriod);
+
+  if(incomingArticles.length === 0) return;
+
   const relevant = filterRelevantArticles(incomingArticles);
   res.json(relevant);
 });
